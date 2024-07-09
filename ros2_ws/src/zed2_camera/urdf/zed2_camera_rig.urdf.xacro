@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+
+<robot name="zed2_camera_rig" xmlns:xacro="http://wiki.ros.org/xacro">
+    <xacro:property name="PI"     value="3.1415926535897931" />
+
+    <xacro:arg name="camera_name"   default="zed2" />
+    <xacro:arg name="camera_model"  default="zed2" />
+
+    <xacro:include filename="$(find zed_wrapper)/urdf/zed_macro.urdf.xacro" />
+
+    <link name="base_link"/>
+    
+    <joint name="zed2_base_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0.0 0"/>
+        <parent link="base_link"/>
+        <child link="zed2_camera_link"/>
+    </joint>
+
+    <xacro:zed_camera name="$(arg camera_name)" model="$(arg camera_model)">
+    </xacro:zed_camera>
+
+    <link name="bracket_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+            <mesh filename="package://zed2_feature_comparison/meshes/zed_camera_optitrack_mount_handheld.dae" />
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+    </link>
+    
+    <joint name="bracket_joint" type="fixed">
+        <origin xyz="0 0 -0.005" rpy="0 ${PI/180*1.871} 0"/>
+        <parent link="base_link"/>
+        <child link="bracket_link"/>
+    </joint>
+
+
+    <link name="optitrack_mount_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+            <mesh filename="package://zed2_feature_comparison/meshes/optitrack_active_marker_mount.dae" />
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+    </link>
+    
+    <joint name="optitrack_mount_joint" type="fixed">
+        <origin xyz="-0.0154 0 0.0444" rpy="0 0 0"/>
+        <parent link="bracket_link"/>
+        <child link="optitrack_mount_link"/>
+    </joint>
+
+
+    <link name="optitrack_marker_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+            <mesh filename="package://zed2_feature_comparison/meshes/optitrack_active_marker_mockup.dae" />
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+    </link>
+    
+    <joint name="optitrack_marker_joint" type="fixed">
+        <origin xyz="0.001 0 0.0125" rpy="0 0 0"/>
+        <parent link="optitrack_mount_link"/>
+        <child link="optitrack_marker_link"/>
+    </joint>
+</robot>
