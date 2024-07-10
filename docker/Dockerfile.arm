@@ -1,8 +1,7 @@
 ARG PARENT_IMAGE=ros
 ARG PARENT_TAG=humble
 #FROM ${PARENT_IMAGE}:${PARENT_TAG}
-FROM stereolabs/zedbot:zed-ros2-wrapper_u22_cuda117_humble_
-
+FROM stereolabs/zedbot:zed-ros2-wrapper_l4t35_1_humble_
 
 ### Use bash by default
 SHELL ["/bin/bash", "-c"]
