@@ -31,7 +31,7 @@ DOCKER_RUN_CMD=(
     --volume "/dev:/dev"
     --volume "/dev/shm:/dev/shm"
     --volume "/tmp/.X11-unix/:/tmp/.X11-unix"
-    --volume "/tmp/zed_ai/:/usr/local/zed/resources/" 
+    --volume "/tmp/zed_ai/:/usr/local/zed/resources/"
     --volume "${PWD}/../ros2_ws/src/zed2_camera:/root/ros2_ws/src/zed2_camera"
     --env ROS_NAMESPACE=${ROS_NAMESPACE}
     --env ROS_DOMAIN_ID=${ROS_DOMAIN_ID}

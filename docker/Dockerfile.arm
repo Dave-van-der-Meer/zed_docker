@@ -3,28 +3,27 @@ ARG PARENT_TAG=humble
 #FROM ${PARENT_IMAGE}:${PARENT_TAG}
 FROM stereolabs/zedbot:zed-ros2-wrapper_l4t35_1_humble_
 
+
 ### Use bash by default
 SHELL ["/bin/bash", "-c"]
 
 ### Set non-interactive installation
 ARG DEBIAN_FRONTEND=noninteractive
 
-
 ### Update system
 RUN apt-get update && \
     apt-get install -yq vim python3-colcon-common-extensions && \
     rm -rf /var/lib/apt/lists/*
 
+### Compile workspace
+WORKDIR /root/ros2_ws/
+RUN /bin/bash -c "source /opt/ros/humble/install/setup.bash; colcon build"
 
 ### Copy over config files and launch scripts
-RUN mkdir -p /root/ros2_ws/src
 COPY ./config /root/config
 COPY ./entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-
 ### Set default command
-
 CMD ["bash"]
-
