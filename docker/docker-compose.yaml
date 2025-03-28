@@ -1,0 +1,30 @@
+#version: '3.8'  # or the version of Docker Compose you're using
+
+services:
+    zed_leo:
+        image: zed_ros2_l4t_36.3.0_sdk_4.2.3
+        container_name: zed_leo
+        network_mode: "host"  # Equivalent to --network=host
+        ipc: "host"  # Equivalent to --ipc=host
+        pid: "host"  # Equivalent to --pid=host
+        privileged: true  # Equivalent to --privileged
+        environment:
+            - ROS_DOMAIN_ID=${ROS_DOMAIN_ID}  # Equivalent to --env ROS_DOMAIN_ID=$ROS_DOMAIN_ID
+            - ROS_NAMESPACE=${ROS_NAMESPACE}  # Equivalent to --env ROS_NAMESPACE=$ROS_NAMESPACE
+              #- DISPLAY=${DISPLAY}  # Equivalent to --env DISPLAY=$DISPLAY
+        runtime: nvidia  # Equivalent to --runtime=nvidia
+        volumes:
+            - /tmp/.X11-unix/:/tmp/.X11-unix  # Equivalent to -v /tmp/.X11-unix/:/tmp/.X11-unix
+            - /usr/local/zed/settings:/usr/local/zed/settings  # Equivalent to -v /usr/local/zed/settings:/usr/local/zed/settings
+            - /usr/local/zed/resources:/usr/local/zed/resources  # Equivalent to -v /usr/local/zed/resources:/usr/local/zed/resources
+            - /dev:/dev  # Equivalent to -v /dev:/dev
+            - /dev/shm:/dev/shm  # Equivalent to -v /dev/shm:/dev/shm
+            - ./../ros2_ws/src/zed2_camera:/root/ros2_ws/src/zed2_camera  # Relative path
+            - ./start_zed2.sh:/root/ros2_ws/start_zed2.sh  # Relative path
+              #        entrypoint:
+              #          bash -c "echo 'Sourcing ROS HUMBLE' && source /opt/ros/$ROS_DISTRO/setup.bash && source /root/ros2_ws/install/local_setup.bash && colcon build --packages-select zed2_camera && source /root/ros2_ws/install/setup.bash"
+        command: /root/ros2_ws/start_zed2.sh # ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zed2  #./start_zed2.sh  #bash  # Equivalent to the last part of the docker run command (`bash`)
+
+        # Optional: If you need the container to be removed after exit
+        #restart: "no"  # Equivalent to --rm flag
+        restart: "always"  # Equivalent to --restart always
