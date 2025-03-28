@@ -20,8 +20,8 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
-from launch.actions import LogInfo
-
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 
 ROBOT_NAMESPACE = None
 try:
@@ -30,16 +30,11 @@ except Exception as e:
     print(e)
     ROBOT_NAMESPACE = ""
 
-CAMERA_NAME = "zed2"
-if ROBOT_NAMESPACE != "":
-    CAMERA_NAME = f"{ROBOT_NAMESPACE}/{CAMERA_NAME}"
-
-
 def generate_launch_description():
 
     # Camera model (force value)
     camera_model = 'zed2' # Included in the config file
-    camera_name = CAMERA_NAME
+    camera_name = "zed2"
 
     config = os.path.join(
         get_package_share_directory('zed2_camera'),
@@ -47,13 +42,18 @@ def generate_launch_description():
         'common.yaml'
         )
 
+    namespace_argument = DeclareLaunchArgument(
+        'namespace', default_value=ROBOT_NAMESPACE, description='Namespace for the robot'
+        )
+
     # ZED Wrapper node
     zed_wrapper_launch = IncludeLaunchDescription(
         launch_description_source=PythonLaunchDescriptionSource([
-            get_package_share_directory('zed_wrapper'),
+            get_package_share_directory('zed2_camera'),
             '/launch/zed_camera.launch.py'
         ]),
         launch_arguments={
+            'namespace': LaunchConfiguration('namespace'),
             'camera_model': camera_model,
             'camera_name': camera_name,
             # 'publish_map_tf': 'false',
@@ -64,20 +64,11 @@ def generate_launch_description():
     )
 
 
-    # OBSOLETE Warning
-    # warning_0 = LogInfo(msg='============================================================================================================')
-    # warning_1 = LogInfo(msg=' !!! WARNING !!! This launch file is obsolete and it will be removed in the next release.')
-    # warning_2 = LogInfo(msg=' Please use \"ros2 launch zed_wrapper zed_camera.launch.py camera_model:=\'zed2\' camera_name:=\'zed\'\" instead.')
-    # warning_3 = LogInfo(msg='============================================================================================================')
-    
     # Define LaunchDescription variable
     ld = LaunchDescription()
-    
+
     # Add nodes to LaunchDescription
-    # ld.add_action(warning_0)
-    # ld.add_action(warning_1)
-    # ld.add_action(warning_2)
-    # ld.add_action(warning_3)
+    ld.add_action(namespace_argument)
     ld.add_action(zed_wrapper_launch)
 
     return ld
