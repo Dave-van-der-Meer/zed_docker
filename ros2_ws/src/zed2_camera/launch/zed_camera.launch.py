@@ -180,6 +180,9 @@ def launch_setup(context, *args, **kwargs):
     xacro_command.append('camera_model:=')
     xacro_command.append(camera_model_val)
     xacro_command.append(' ')
+    xacro_command.append('namespace:=')
+    xacro_command.append(namespace_val)
+    xacro_command.append(' ')
     xacro_command.append('custom_baseline:=')
     xacro_command.append(custom_baseline_val)
     if(enable_gnss_val=='true'):
