@@ -10,6 +10,7 @@ source /root/ros2_ws/install/setup.bash
 # Set the namespace environment variable
 echo "SETTING ROS_NAMESPACE VARIABLE ..."
 export ROS_NAMESPACE=leo01
+export ROS_DOMAIN_ID=1
 
 # Launch the node
 echo "LAUNCHING ZED2 CAMERA ..."
